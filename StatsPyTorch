@@ -1,0 +1,7 @@
+Training time was:  1146.0872962474823  seconds
+Model applied to training set:
+Got 6414 / 6478 correct (99.01)
+Model applied to development set:
+Got 736 / 809 correct (90.98)
+Model applied to test set:
+Got 734 / 811 correct (90.51)
