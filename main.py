@@ -51,7 +51,7 @@ channel_7 = 128
 channel_8 = 128
 learning_rate = 3e-3
 
-pDropOut = 0.5
+pDropOut = 0.75
 model = nn.Sequential(
     nn.Conv2d(in_channel, channel_1, (3,3), padding=1),
     nn.BatchNorm2d(channel_1),
@@ -89,8 +89,8 @@ model = nn.Sequential(
 )
 
 model.apply(init_weight)
-optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay = 0.01)
-epochs = 15
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+epochs = 20
 
 tic = time.time()
 losses, iters, trainAccs, devAccs = train(model, loaders, optimizer, epochs, print_every)
