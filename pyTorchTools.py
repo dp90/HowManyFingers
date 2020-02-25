@@ -11,6 +11,90 @@ import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 
+def build_pytorch_model():
+    imH, imW = 64, 64
+    in_channel = 3
+    channel_1 = 16
+    channel_2 = 16
+    channel_3 = 32
+    channel_4 = 32
+    channel_5 = 64
+    channel_6 = 64
+    channel_7 = 128
+    channel_8 = 128
+    
+    pDropOut = 0.5
+    model = nn.Sequential(
+        nn.Conv2d(in_channel, channel_1, (3,3), padding=1),
+        nn.BatchNorm2d(channel_1),
+        nn.ReLU(),
+        nn.Conv2d(channel_1, channel_2, (3,3), padding=1),
+        nn.BatchNorm2d(channel_2),
+        nn.ReLU(),
+        nn.MaxPool2d((2,2)),
+        nn.Conv2d(channel_2, channel_3, (3,3), padding=1),
+        nn.BatchNorm2d(channel_3),
+        nn.ReLU(),
+        nn.Conv2d(channel_3, channel_4, (3,3), padding=1),
+        nn.BatchNorm2d(channel_4),
+        nn.ReLU(),
+        nn.MaxPool2d((2,2)),
+        nn.Conv2d(channel_4, channel_5, (3,3), padding=1),
+        nn.BatchNorm2d(channel_5),
+        nn.ReLU(),
+        nn.Conv2d(channel_5, channel_6, (3,3), padding=1),
+        nn.BatchNorm2d(channel_6),
+        nn.ReLU(),
+        nn.MaxPool2d((2,2)),
+        nn.Conv2d(channel_6, channel_7, (3,3), padding=1),
+        nn.BatchNorm2d(channel_7),
+        nn.ReLU(),
+        nn.Conv2d(channel_7, channel_8, (3,3), padding=1),
+        nn.BatchNorm2d(channel_8),
+        nn.ReLU(),
+        Flatten(),
+        nn.Linear(int(channel_8*imH*imW/(4*4*4)), 32),
+        nn.BatchNorm1d(32),
+        nn.ReLU(),
+        nn.Dropout(p=pDropOut),
+        nn.Linear(32,6)
+    )
+    
+    model.apply(init_weight)
+    return model
+
+def results_pytorch(iters,losses,trainAccs,devAccs,loaders,model,stdIm,meanIm,performErrorAnalysis=False):
+    plt.figure()
+    plt.plot(iters, losses, 'k')
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    
+    plt.figure()
+    plt.plot(np.arange(1,21,1), trainAccs[0::2], 'k', label="Training acc.")
+    plt.plot(np.arange(1,21,1), devAccs[0::2], 'k--', label="Validation acc.")
+    plt.xticks(np.arange(0, 22, 2))
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    
+    # Test model
+    print("Model applied to training set:")
+    check_accuracy(loaders['train'], model)
+    
+    print("Model applied to development set:")
+    check_accuracy(loaders['dev'], model)
+    
+    print("Model applied to development set:")
+    check_accuracy(loaders['test'], model)
+    
+    #print("Model's state_dict:")
+    #for param_tensor in model.state_dict():
+    #    print(param_tensor, "\t", model.state_dict()[param_tensor].size())
+    
+    if performErrorAnalysis:
+        error_analysis(model, loaders, stdIm, meanIm, maxNumFotos=200)
+    return
+
 dtype = torch.float32
 device = torch.device('cpu')
 

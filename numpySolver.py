@@ -158,9 +158,9 @@ class Solver(object):
         """
         self.model = model
         self.X_train = data['X_train']
-        self.y_train = data['y_train']
+        self.y_train = data['Y_train']
         self.X_val = data['X_val']
-        self.y_val = data['y_val']
+        self.y_val = data['Y_val']
 
         # Unpack keyword arguments
         self.update_rule = kwargs.pop('update_rule', 'adam')

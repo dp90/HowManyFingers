@@ -132,6 +132,7 @@ def batchnorm1D_forward(x, gamma, beta, bn_param):
 
         x_norm = (x - running_mean[None,:]) / (np.sqrt(running_var[None,:] + eps))
         out = gamma*x_norm + beta
+        cache = {}
 
     else:
         raise ValueError('Invalid forward batchnorm mode "%s"' % mode)
@@ -195,6 +196,7 @@ def dropout_forward(x, dropout_param):
         mask = (np.random.rand(*x.shape) < p) / p
         out = x*mask
     elif mode == 'test':
+        mask = None
         out = x
 
     cache = (dropout_param, mask)
@@ -317,13 +319,26 @@ def maxpool2D_forward(x, pool_param):
     N, C, H, W = x.shape
     Hout = int(1 + (H - HH) / stride)
     Wout = int(1 + (W - WW) / stride)
+    
+    X_reshaped = x.reshape(N*C, 1, H, W)
+    X_col = im2col_indices(X_reshaped, HH, WW, padding=0, stride=stride)
+
+    max_idx = np.argmax(X_col, axis=0)
+    out = X_col[max_idx, range(max_idx.size)]
+    
+    out = out.reshape(Hout, Wout, N, C)
+    out = out.transpose(2, 3, 0, 1)
+    '''
+    
 
     x_cols = im2col_indices(x,HH,WW,padding=0,stride=stride)
     x_cols = (x_cols.T).reshape(int(N*C*H*W/(HH*WW)),int(HH*WW))
     out1 = np.max(x_cols,1).reshape(HH*WW,-1).T
     out2 = out1.reshape(N, C, -1)
     out = out2.reshape(N,C,Hout,Wout)
-    cache = (x, pool_param)
+    '''
+    cache = (x, max_idx, pool_param)
+    
     
     return out, cache
 
@@ -339,8 +354,18 @@ def maxpool2D_backward(dout, cache):
     - dx: Gradient with respect to x
     """
 
-    x, pool_param = cache
+    x, max_idx, pool_param = cache
+    HH, WW = pool_param['pool_height'], pool_param['pool_width']
+    N, C, H, W = x.shape
+    stride = pool_param['stride']
     
+    dx_col = np.zeros((4, int(N*C*H*W/4)))
+    dout_flat = dout.transpose(2, 3, 0, 1).ravel()
+    dx_col[max_idx, range(max_idx.size)] = dout_flat
+    dx = col2im_indices(dx_col, (N*C, 1, H, W), HH, WW, padding=0, stride=stride)
+    dx = dx.reshape(N, C, H, W)
+    
+    '''
     stride = pool_param['stride']
     HH, WW = pool_param['pool_height'], pool_param['pool_width']
     N, C, H, W = x.shape
@@ -358,7 +383,8 @@ def maxpool2D_backward(dout, cache):
     dx1 = col2im_indices(max_pos, x.shape, field_height=HH, field_width=WW, padding=0,
                          stride=stride)
     dx = dx1.reshape(x.shape)
-
+    '''
+    
     return dx
 
 
@@ -388,7 +414,7 @@ def batchnorm2D_forward(x, gamma, beta, bn_param):
     N, C, H, W = x.shape
     x = np.transpose(x, (1,0,2,3))
     x_flat = x.reshape(C,-1)
-    x_norm_flat, cache = batchnorm_forward(x_flat.T, gamma, beta, bn_param)
+    x_norm_flat, cache = batchnorm1D_forward(x_flat.T, gamma, beta, bn_param)
     x_norm = (x_norm_flat.T).reshape(C,N,H,W)
     out = np.transpose(x_norm, (1,0,2,3))
 
@@ -411,7 +437,7 @@ def batchnorm2D_backward(dout, cache):
     N, C, H, W = dout.shape
     dout = np.transpose(dout, (1,0,2,3))
     dout_flat = dout.reshape(C,-1)
-    dx_flat, dgamma, dbeta = batchnorm_backward(dout_flat.T, cache)
+    dx_flat, dgamma, dbeta = batchnorm1D_backward(dout_flat.T, cache)
     dx = (dx_flat.T).reshape(C,N,H,W)
     dx = np.transpose(dx, (1,0,2,3))
     
@@ -434,6 +460,7 @@ def softmax_loss(x, y):
     Provided in Standford CS231n
     """
     
+    y = y.astype('int32')
     shifted_logits = x - np.max(x, axis=1, keepdims=True)
     Z = np.sum(np.exp(shifted_logits), axis=1, keepdims=True)
     log_probs = shifted_logits - np.log(Z)
@@ -500,27 +527,5 @@ def col2im_indices(cols, x_shape, field_height=3, field_width=3, padding=1,
     if padding == 0:
         return x_padded
     return x_padded[:, :, padding:-padding, padding:-padding]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
