@@ -107,6 +107,8 @@ As the Numpy implementations are by no means optimized for GPU use, both model i
 This section treats the training and test results of both model implementations, as well as their relative speed. Additionally, some examples are presented of misclassifications to get a more tangible understanding of the model's performance. 
 
 ### PyTorch
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/AccPlotPyTorch.png "Train and development accuracies")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/LossPlotPyTorch.png "Losses")
 Image of iterations vs loss. Image of iterations vs accuracies. Table of train, development and test accuracies. 
 
 ### Numpy implementation
