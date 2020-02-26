@@ -13,39 +13,95 @@ Numerous efforts over the last decade have improved computational efficiency:
 Another factor in the speed of algorithms, ceteris paribus, is the efficiency of their code. A number of libraries have become available, such as Keras/TensorFlow, PyTorch, Scikit, etc. Besides an easy-to-use interface, these libraries tend to have been optimized for speed. However, it is unknown to the author, if and how much faster the libaries are than a vectorized Numpy version of the same algorithms, coded by an average Python programmer.  
 The main question is therefore: *How does the PyTorch library compare to my own implementation of various standard architectures, regularizers, normalization techniques and optimizers in terms of speed?*
 
-To compare the training speed of the Numpy and PyTorch modules, a prediction challenge was required that could be implemented with relative ease, but that would still offer valuable lessons in data gathering and processing. The challenge was found in predicting the number of fingers held up by a hand in a given image, essentially an image classification problem.  
+To compare the training speed of the Numpy and PyTorch modules, a prediction challenge was required that could be implemented with relative ease, but that would still offer valuable lessons in data gathering and processing. The challenge was found in predicting the number of fingers held up by a hand in a given image, essentially an image classification problem. The relative speed of both implementations is computed as the inverse of the relative time both models require to train.
+
 In the subsequent sections, the applied methods are discussed, as well as the results and analysis of these results. Finally, the conclusion is presented, followed by a short discussion of the project and potential improvements. 
 
 ## Methods
-A model was trained with PyTorch to test various network architectures, after which a model was trained with the same architecture, using the Numpy module. The relative speed of both implementations is computed as the inversed relative time both models required to train.
+This section describes details of the dataset used to train and test the model, it discusses the applied network architecture and the method applied to find it, and concludes with remarks on the Numpy module and the machine the model is run on. The relative speed of both implementations is computed as the inverse of the relative time both models require to train. 
 
 ### Dataset
-The dataset consists of 4049 images of hands with 0-5 fingers extended. Most (~80%) of these images are of the author's hand, and the remainder are collected from 11 volunteers in equal proportion. The distribution of the images among each class can be found in table 1. 
+The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended. Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
 
-Table 1: Distribution of images among classes
+Table 1: Distribution of images amongst classes
 | # Fingers     | Percentage of total |
 | ------------- |:-------------------:|
-|       0       |       25.1%         |
-|       1       |       10.2%         |
-|       2       |       56.3%         |
-|       3       |       25.1%         |
-|       4       |       25.1%         |
-|       5       |       25.1%         |
+|       0       |       7.9%          |
+|       1       |       17.7%         |
+|       2       |       24.2%         |
+|       3       |       14.0%         |
+|       4       |       23.4%         |
+|       5       |       12.8%         |
 
-8098 Pictures with various backgrounds. Pictures with hands from different people. Data augmentation through flipping: left and right hands. 
-Preprocessing: squaring the images, cropping and normalization. 
+After collection and labelling of the data, the images were squared by cropping out 1/8 or 7/32 of the pixels on both sides of the longest edge for aspect ratios of 3:4 and 9:16 respectively. To obtain workable samples, the images were compressed to 64x64 pixels with Python's PIL module. A test with an early stage, possibly suboptimal model reveiled that compressing the images to 32x32 pixels significantly reduced the model's generalizability.
 
-Divided into a training set (80%), development set (10%) and a test set (10%). 
-training error was close to the Bayes error, while the validation error was less than 10%. 
+To train, develop and test the model, the dataset was divided into a training, development and test set. These contain respectively 80%, 10% and 10% of the images, or 6478, 809 and 811 images in absolute terms.  
 
 ### Network architecture
+A suitable architecture was found with PyTorch and subsequently used to test the relative speed of PyTorch and the Numpy module. But what is a suitable architecture? The Bayes error for this problem is 0%, so that the training error should be approximately that. The error for the development set is found to be sufficiently low at less than 10%. A matching architecture was found by trail and error, based on informed guesses. A description of this process can be found below, as well as the final architecture. 
 
+After collecting 640 images, an initial architecture was applied of
+4 convolutional layers with:
+- Batch normalization
+- ReLU activation
+- Filter size: 3x3
+- Stride: 1
+- Padding: 1
+- Channels: 16, 16, 32 and 32 respectively
+
+Followed by
+Affine layer with:
+- 40 hidden units
+- Batch normalization
+- ReLU activation
+- Drop out: p = 0.5
+
+Followed by
+Affine layer and softmax classifier.
+
+The resulting training and development set accuracies were approximately 100% and 50%. From these statistics it was concluded that the model suffered from high variance, which can be mitigated by regularization or adding data. As the former at this point seemed unlikely to result in a development accuracy of over 90%, it was opted to add data.  
+Adding roughly 1400 images to end up with 2000 images, increased the development accuracy to approximately 74%. Encouraged by this improvement, another 2000 images were gathered to achieve a dissapointing 78% development accuracy. Considering the marginal increase in accuracy with a doubling of the dataset size, the model clearly suffered from high bias, which called for a different architecture.  
+I increased the number of layers to allow for further developed feature combinations (entire hands instead of fingers). I increased the number of filters to allow for more feature combinations, e.g. different background colors. I increased the number of hidden units in the affine layer. I added some regularization in the form of drop out. Finally, I added maxpool layers, which made the largest difference. As I apply 3x3 filters to a 128x128 image, the 'filtered' area, even over multiple convolutional layers is relatively small compared to the image dimensions. As the maxpool layer essentially extracts whether certain filters were activated over a given area (2x2 in this case), the information of a layer is kept, while its dimensions are reduced. The subsequent 3x3 filters then effectively cover a much larger area of the original image than they do without the maxpool layer.  
+The final architecture is then
+- Convolutional layer - channels: 16, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Convolutional layer - channels: 16, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Maxpool - size: 2x2, stride: 2
+- Convolutional layer - channels: 32, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Convolutional layer - channels: 32, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Maxpool - size: 2x2, stride: 2
+- Convolutional layer - channels: 64, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Convolutional layer - channels: 64, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Maxpool - size: 2x2, stride: 2
+- Convolutional layer - channels: 128, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Convolutional layer - channels: 128, filter size: 3x3, stride: 1, padding: 0
+- Batch normalization
+- ReLU
+- Affine - hidden units: 48
+- Batch normalization
+- ReLU
+- Drop out - p = 0.75 (probability of being dropped)
+- Affine - hidden units: 6
+- Softmax
 
 ### Numpy implementation
-Some details about the network implementation.  
+The Numpy implementation of the elements in the final architecture were all part of Stanford CS231n course. The Solver class was provided as course material, but the remainder is my own work, inlcuding the vectorized implementations of the various layers. In the files provided in this repository it is specified what is and what is not my own work. 
 
 ### Computer specifications
-CPU
+As the Numpy implementations are by no means optimized for GPU use, both model implementations are run on CPU. 
 
 ## Results
 
