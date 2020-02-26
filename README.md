@@ -9,7 +9,8 @@ Numerous efforts over the last decade have improved computational efficiency:
 - Parallelization, such as using GPUs or development of special chips; 
 - Different weight initializations, such as Xavier (Glorot & Bengio, 2015) or He-normal (He et al., 2015);
 - Normalization techniques, such as batch (Ioffe & Szegedy, 2015), layer (Ba et al., 2016) or group normalization (Wu & He, 2018);  
-- Different optimizers, such as Adagrad (Duchi et al., 2011), RMSprop (Hinton, 2013) and Adam (Kingma & Ba, 2015).  
+- Different optimizers, such as Adagrad (Duchi et al., 2011), RMSprop (Hinton, 2013) and Adam (Kingma & Ba, 2015).
+
 Another factor in the speed of algorithms, ceteris paribus, is the efficiency of their code. A number of libraries have become available, such as Keras/TensorFlow, PyTorch, Scikit, etc. Besides an easy-to-use interface, these libraries tend to have been optimized for speed. However, it is unknown to the author, if and how much faster the libaries are than a vectorized Numpy version of the same algorithms, coded by an average Python programmer.  
 The main question is therefore: How does the PyTorch library compare to my own implementation of various standard architectures, regularizers, normalization techniques and optimizers in terms of speed?
 
