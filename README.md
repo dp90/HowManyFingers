@@ -129,19 +129,19 @@ Table 2: Accuracies of PyTorch and Numpy model implementations
 While the PyTorch and Numpy implementations of the model perform similarly, as expected, in terms of accuracy, their training times are far from similar. While the PyTorch implementations trained in **1146s**, the Numpy implementation took **xxxxxxxs**, which makes the PyTorch module **xxx** times as fast! 
 
 ### Misclassifications
-Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its intriguing inabilities. Figure 4 shows three misclassified images.
+Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its sometimes intriguing inabilities. Figure 4 shows three images that are understandably misclassified. The most left image has label 4, but the middle and ring finger are hardly visbile, so that the prediction 2 seems plausible. In the middle picture, it is not difficult to imagine that the classifier counted the thumb too. The color of the fingers in the most right image are very similar to the background, so that the misclassification is not entirely surprising. 
 
 Figure 4: Understandbly misclassified images  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch10.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch2.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch8.png "Misclassified image")
 
-Figure 5: Strangely misclassified images
+On the other hand, the model misclassified a (larger) number of images that the average human being would have classified correctly without a doubt. Three examples of such images are displayed in Figure 5. Only the little finger in the most right image is not clearly visible, but the predicted value 1 is still off mark, if that finger was not discerned. 
 
+Figure 5: Strangely misclassified images  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch3.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch5.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch7.png "Misclassified image")
-
 
 ## Conclusion & Discussion
 PyTorch is faster, so I wouldn't recommend or personally use my Numpy implementations. Model's performance could still be improved.  
