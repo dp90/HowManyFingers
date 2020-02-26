@@ -131,12 +131,13 @@ While the PyTorch and Numpy implementations of the model perform similarly, as e
 ### Misclassifications
 Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its intriguing inabilities. Figure 4 shows three misclassified images.
 
-Figure 4: Understandbly misclassified images
+Figure 4: Understandbly misclassified images  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch10.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch2.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch8.png "Misclassified image")
 
 Figure 5: Strangely misclassified images
+
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch3.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch5.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch7.png "Misclassified image")
