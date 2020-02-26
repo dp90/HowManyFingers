@@ -21,7 +21,7 @@ In the subsequent sections, the applied methods are discussed, as well as the re
 This section describes details of the dataset used to train and test the model, it discusses the applied network architecture and the method applied to find it, and concludes with remarks on the Numpy module and the machine the model is run on. The relative speed of both implementations is computed as the inverse of the relative time both models require to train. 
 
 ### Dataset
-The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended. Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
+The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure XXX). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
 
 Table 1: Distribution of images amongst classes
 | # Fingers     | Percentage of total |
@@ -101,16 +101,25 @@ The final architecture is then
 The Numpy implementation of the elements in the final architecture were all part of Stanford CS231n course. The Solver class was provided as course material, but the remainder is my own work, inlcuding the vectorized implementations of the various layers. In the files provided in this repository it is specified what is and what is not my own work. 
 
 ### Computer specifications
-As the Numpy implementations are by no means optimized for GPU use, both model implementations are run on CPU. 
+As the Numpy implementations are by no means optimized for GPU use, both model implementations are run on CPU of type Intel Core i7-4700MQ. The operating system is Linux Mint v19.3. 
 
-## Results
+## Results & Analysis
+This section treats the training and test results of both model implementations, as well as their relative speed. Additionally, some examples are presented of misclassifications to get a more tangible understanding of the model's performance. 
 
-## Analysis
+### PyTorch
+Image of iterations vs loss. Image of iterations vs accuracies. Table of train, development and test accuracies. 
 
-## Conclusion
-PyTorch is faster, so I wouldn't recommend or personally use my Numpy implementations.
+### Numpy implementation
+Image of iterations vs loss. Image of iterations vs accuracies. Table of train, development and test accuracies. 
 
-## Discussion
+### Speed
+
+### Misclassifications
+Show 3-4 images with understandable misclassifications.  
+Show 3-4 images with strange misclassifications.
+
+## Conclusion & Discussion
+PyTorch is faster, so I wouldn't recommend or personally use my Numpy implementations. Model's performance could still be improved.  
 Add data. Other option is to regularize with weight decay/dropout, but this also decreases the training error. Given the Bayesian error of 0.0%, this solution could work to improve the model's performance in a practical application, but is not the optimal solution.  
 Another possibility could be to pre-proces the data to remove the background from the images, so that only the hands themselves remain.  
 Ensemble.  
