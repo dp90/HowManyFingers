@@ -24,10 +24,13 @@ The dataset consists of 4049 images of hands with 0-5 fingers extended. Most (~8
 
 Table 1: Distribution of images among classes
 | # Fingers     | Percentage of total |
-| col 3 is      | right-aligned       |
-| col 2 is      | centered            |
-| zebra stripes | are neat            |
-
+| ------------- |:-------------------:|
+|       0       |       25.1%         |
+|       1       |       10.2%         |
+|       2       |       56.3%         |
+|       3       |       25.1%         |
+|       4       |       25.1%         |
+|       5       |       25.1%         |
 
 8098 Pictures with various backgrounds. Pictures with hands from different people. Data augmentation through flipping: left and right hands. 
 Preprocessing: squaring the images, cropping and normalization. 
