@@ -136,7 +136,7 @@ Figure 4: Understandbly misclassified images
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch2.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch8.png "Misclassified image")
 
-On the other hand, the model misclassified a (larger) number of images that the average human being would have classified correctly without a doubt. Three examples of such images are displayed in Figure 5. Only the little finger in the most right image is not clearly visible, but the predicted value 1 is still off mark, if that finger was not discerned. 
+On the other hand, the model misclassified a (larger) number of images that the average human being would have classified correctly without a doubt. Three examples of such images are displayed in Figure 5. Only the little finger in the most right image is not clearly visible, but the predicted value 1 is still off mark, if that finger was not considered by the model. 
 
 Figure 5: Strangely misclassified images  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch3.png "Misclassified image")
