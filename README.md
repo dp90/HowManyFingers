@@ -35,10 +35,10 @@ Table 1: Distribution of images amongst classes
 
 After collection and labelling of the data, the images were squared by cropping out 1/8 or 7/32 of the pixels on both sides of the longest edge for aspect ratios of 3:4 and 9:16 respectively. To obtain workable samples, the images were compressed to 64x64 pixels with Python's PIL module. A test with an early stage, possibly suboptimal model reveiled that compressing the images to 32x32 pixels significantly reduced the model's generalizability.
 
-To train, develop and test the model, the dataset was divided into a training, development and test set. These contain respectively 80%, 10% and 10% of the images, or 6478, 809 and 811 images in absolute terms.  
+To train, develop and test the model, the dataset was divided into a training, validation and test set. These contain respectively 80%, 10% and 10% of the images, or 6478, 809 and 811 images in absolute terms.  
 
 ### Network architecture
-A suitable architecture was found with PyTorch and subsequently used to test the relative speed of PyTorch and the Numpy module. But what is a suitable architecture? The Bayes error for this problem is 0%, so that the training error should be approximately that. The error for the development set is found to be sufficiently low at less than 10%. A matching architecture was found by trail and error, based on informed guesses. A description of this process can be found below, as well as the final architecture. 
+A suitable architecture was found with PyTorch and subsequently used to test the relative speed of PyTorch and the Numpy module. But what is a suitable architecture? The Bayes error for this problem is 0%, so that the training error should be approximately that. The error for the validation set is found to be sufficiently low at less than 10%. A matching architecture was found by trail and error, based on informed guesses. A description of this process can be found below, as well as the final architecture. 
 
 After collecting 640 images, an initial architecture was applied of
 4 convolutional layers with:
@@ -59,8 +59,8 @@ Affine layer with:
 Followed by
 Affine layer and softmax classifier.
 
-The resulting training and development set accuracies were approximately 100% and 50%. From these statistics it was concluded that the model suffered from high variance, which can be mitigated by regularization or adding data. As the former at this point seemed unlikely to result in a development accuracy of over 90%, it was opted to add data.  
-Adding roughly 1400 images to end up with 2000 images, increased the development accuracy to approximately 74%. Encouraged by this improvement, another 2000 images were gathered to achieve a dissapointing 78% development accuracy. Considering the marginal increase in accuracy with a doubling of the dataset size, the model clearly suffered from high bias, which called for a different architecture.  
+The resulting training and validation set accuracies were approximately 100% and 50%. From these statistics it was concluded that the model suffered from high variance, which can be mitigated by regularization or adding data. As the former at this point seemed unlikely to result in a validation accuracy of over 90%, it was opted to add data.  
+Adding roughly 1400 images to end up with 2000 images, increased the validation accuracy to approximately 74%. Encouraged by this improvement, another 2000 images were gathered to achieve a dissapointing 78% validation accuracy. Considering the marginal increase in accuracy with a doubling of the dataset size, the model clearly suffered from high bias, which called for a different architecture.  
 I increased the number of layers to allow for further developed feature combinations (entire hands instead of fingers). I increased the number of filters to allow for more feature combinations, e.g. different background colors. I increased the number of hidden units in the affine layer. I added some regularization in the form of drop out. Finally, I added maxpool layers, which made the largest difference. As I apply 3x3 filters to a 128x128 image, the 'filtered' area, even over multiple convolutional layers is relatively small compared to the image dimensions. As the maxpool layer essentially extracts whether certain filters were activated over a given area (2x2 in this case), the information of a layer is kept, while its dimensions are reduced. The subsequent 3x3 filters then effectively cover a much larger area of the original image than they do without the maxpool layer.  
 The final architecture is then
 - Convolutional layer - channels: 16, filter size: 3x3, stride: 1, padding: 0
@@ -106,17 +106,30 @@ As the Numpy implementations are by no means optimized for GPU use, both model i
 ## Results & Analysis
 This section treats the training and test results of both model implementations, as well as their relative speed. Additionally, some examples are presented of misclassifications to get a more tangible understanding of the model's performance. 
 
-### PyTorch
-![alt text](https://github.com/dp90/HowManyFingers/blob/master/AccPlotPyTorch.png "Train and development accuracies")
-![alt text](https://github.com/dp90/HowManyFingers/blob/master/LossPlotPyTorch.png "Losses")
-Image of iterations vs loss. Image of iterations vs accuracies. Table of train, development and test accuracies. 
+### PyTorch & Numpy
+As shown in figure 2, the accuracies of the training and validation sets increase in tandem up to approximately 70%. From there onwards, the difference increases to a final gap of approximately 10%. 
 
-### Numpy implementation
-Image of iterations vs loss. Image of iterations vs accuracies. Table of train, development and test accuracies. 
+Figure 2: PyTorch model - training and validation accuracies (left) and losses (right) per iteration
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/AccPlotPyTorch.png "Train and validation accuracies")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/LossPlotPyTorch.png "Losses")  
 
-### Speed
+The Numpy implementation of the model shows similar results (see figure 3). 
+Image of iterations vs loss. Image of iterations vs accuracies. Table of train, validation and test accuracies. 
+
+The final accuracies are similar as expected (table 2). Due to the randomness in the weight initialization, the models are not identical. 
+
+Table 2: Accuracies of PyTorch and Numpy model implementations
+|    Module     | Training accuracy | Validation accuracy | Test accuracy |
+| ------------- |:-----------------:| :------------------:|:-------------:|
+|     PyTorch   |       99.01%      |        90.98%       |     90.51%    |
+|      Numpy    |       99.00%      |        90.00%       |     90.00%    |
+
+
+### PyTorch Vs Numpy
+While the PyTorch and Numpy implementations of the model perform similarly, as expected, in terms of accuracy, their training times are far from similar. While the PyTorch implementations trained in **1146s**, the Numpy implementation took **xxxxxxxs**, which makes the PyTorch module **xxx** times as fast! 
 
 ### Misclassifications
+Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its intriguing inabilities. Figure 4 shows 
 Show 3-4 images with understandable misclassifications.  
 Show 3-4 images with strange misclassifications.
 
@@ -126,6 +139,7 @@ Add data. Other option is to regularize with weight decay/dropout, but this also
 Another possibility could be to pre-proces the data to remove the background from the images, so that only the hands themselves remain.  
 Ensemble.  
 C++.
+GPU.
 
 ## References
 K. He, X. Zhang, S. Ren & J. Sun (2015), Deep Residual Learning for Image Recognition.  
