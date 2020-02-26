@@ -129,9 +129,18 @@ Table 2: Accuracies of PyTorch and Numpy model implementations
 While the PyTorch and Numpy implementations of the model perform similarly, as expected, in terms of accuracy, their training times are far from similar. While the PyTorch implementations trained in **1146s**, the Numpy implementation took **xxxxxxxs**, which makes the PyTorch module **xxx** times as fast! 
 
 ### Misclassifications
-Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its intriguing inabilities. Figure 4 shows 
-Show 3-4 images with understandable misclassifications.  
-Show 3-4 images with strange misclassifications.
+Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its intriguing inabilities. Figure 4 shows three misclassified images.
+
+Figure 4: Understandbly misclassified images
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch10.png "Misclassified image")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch2.png "Misclassified image")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch8.png "Misclassified image")
+
+Figure 5: Strangely misclassified images
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch3.png "Misclassified image")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch5.png "Misclassified image")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch7.png "Misclassified image")
+
 
 ## Conclusion & Discussion
 PyTorch is faster, so I wouldn't recommend or personally use my Numpy implementations. Model's performance could still be improved.  
