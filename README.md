@@ -24,10 +24,10 @@ This section describes details of the dataset used to train and test the model, 
 ### Dataset
 The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure XXX). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. 
 
-Figure 1: Examples of images in dataset
+Figure 1: Examples of images in dataset  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example1.png "Example image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example2.png "Example image")  
-![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example3.png "Example image")  
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example3.png "Example image")
 
 The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
 
