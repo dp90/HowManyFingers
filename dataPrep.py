@@ -79,14 +79,14 @@ def prepare_image_dataset(srcDir,finDir=None,imSize=(64,64),save=False,flips=Fal
             img.save(finDir + "img" + str(nImgs) + ".jpg")
             file.write("img" + str(nImgs) + ".jpg:-" + labelDict[fileName] + "\n")
             nImgs += 1
-            img = img.transpose(Image.FLIP_TOP_BOTTOM)
-            img.save(finDir + "img" + str(nImgs) + ".jpg")
-            file.write("img" + str(nImgs) + ".jpg:-" + labelDict[fileName] + "\n")
-            nImgs += 1
-            img = img.transpose(Image.FLIP_LEFT_RIGHT)
-            img.save(finDir + "img" + str(nImgs) + ".jpg")
-            file.write("img" + str(nImgs) + ".jpg:-" + labelDict[fileName] + "\n")
-            nImgs += 1
+            #img = img.transpose(Image.FLIP_TOP_BOTTOM)
+            #img.save(finDir + "img" + str(nImgs) + ".jpg")
+            #file.write("img" + str(nImgs) + ".jpg:-" + labelDict[fileName] + "\n")
+            #nImgs += 1
+            #img = img.transpose(Image.FLIP_LEFT_RIGHT)
+            #img.save(finDir + "img" + str(nImgs) + ".jpg")
+            #file.write("img" + str(nImgs) + ".jpg:-" + labelDict[fileName] + "\n")
+            #nImgs += 1
             img.close()
         file.close()
         
