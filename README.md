@@ -7,7 +7,9 @@ The files are
 - pyTorchTools.py: Contains functions to set up a PyTorch model, to train it, to check its accuracy and to plot results. 
 - numpyLayers.py: Contains functions for the forward and backward propagation of various layers, regularizers, normalizations and a loss function. 
 - numpyModelNN.py: Contains classes to combine the tools from numpyLayers.py into a neural network and compute the loss and gradients. 
-- numpyTools: Contains classes and functions to load the model as specified by numpyModelNN.py, to load data in mini-batches, to train the model with the Adam optimizer, and to show results.  
+- numpyTools.py: Contains classes and functions to load the model as specified by numpyModelNN.py, to load data in mini-batches, to train the model with the Adam optimizer, and to show results.  
+- weightsDictNumpy.pkl: A dict with trained weights for the Numpy model as specified in numpyTools.py, which can be loaded with "wDict = pickle.load( open( "weightsDictNumpy.pkl", "rb" ) )" and subsequently used with "solver.model.params = wDict".
+- weightsDictPytorch.pt: A dict with trained weights for the PyTorch model as specified in pyTorchTools.py, which can be loaded  in accordance with the [PyTorch documentation](https://pytorch.org/tutorials/beginner/saving_loading_models.html). 
 
 ## Introduction
 An important factor in the practical applicability of deep neural networks is cost, which can roughly be divided in gathering and storage of data, and computational costs to train and apply models. Decreasing hardware costs reduce computational costs, but another major driver of deep learning's success is the more efficient use of available hardware.  
