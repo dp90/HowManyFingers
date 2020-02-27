@@ -6,18 +6,16 @@ Created on Tue Jan 28 17:46:11 2020
 """
 
 import os
-import torch
-import torch.nn as nn
 import numpy as np
 import time
+import torch
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from dataPrep import add_images_to_dataset
 from dataLoad import load_data_sets, numpy_to_pytorch
-from pyTorchTools import Flatten, train, init_weight, check_accuracy, error_analysis, build_pytorch_model
-from numpyModelNN import *
-from numpyTools import *
-from numpyLayers import *
+from pyTorchTools import train, build_pytorch_model, results_pytorch
+from numpyModelNN import NeuralNet
+from numpyTools import build_architecture, Solver
 
 # Set directories for folder with new and prepared images
 imPathOrig = os.getcwd() + "/newImages/"
@@ -58,7 +56,7 @@ if usePyTorch:
     performErrorAnalysis = False
     results_pytorch(iters,losses,trainAccs,devAccs,loaders,model,stdIm,meanIm,performErrorAnalysis)
 
-    #pathStateDict = os.getcwd() + "/20200223_1149.pt"
+    #pathStateDict = os.getcwd() + "/weightsDictPytorch.pt"
     #torch.save(model.state_dict(), pathStateDict)
     
 elif usePyTorch is False:

@@ -70,9 +70,8 @@ def results_pytorch(iters,losses,trainAccs,devAccs,loaders,model,stdIm,meanIm,pe
     plt.ylabel("Loss")
     
     plt.figure()
-    plt.plot(np.arange(1,21,1), trainAccs[0::2], 'k', label="Training acc.")
-    plt.plot(np.arange(1,21,1), devAccs[0::2], 'k--', label="Validation acc.")
-    plt.xticks(np.arange(0, 22, 2))
+    plt.plot(trainAccs, 'k', label="Training acc.")
+    plt.plot(devAccs, 'k--', label="Validation acc.")
     plt.xlabel("Epochs")
     plt.ylabel("Accuracy")
     plt.legend()
