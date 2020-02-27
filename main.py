@@ -38,17 +38,17 @@ for i in range(6):
     print(np.sum(y == i))
 
 # Select the use of PyTorch "= True", or Numpy "= False"
-usePyTorch = False
+usePyTorch = True
 if usePyTorch:
     batch_size = 256
     loaders = numpy_to_pytorch(data, batch_size)
     del data
-    build_pytorch_model()
+    model = build_pytorch_model()
     
     print_every = 26
     learning_rate = 3e-3
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    epochs = 15
+    epochs = 25
 
     tic = time.time()
     losses, iters, trainAccs, devAccs = train(model, loaders, optimizer, epochs, print_every)
