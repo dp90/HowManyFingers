@@ -1,6 +1,13 @@
 # How many fingers?
-This repository provides the tools to train a model to predict the number of fingers held up by a hand in a given image. Two implementations of this model are compared: a PyTorch version and a version, in which the layers, regularizers, normalization, optimizers and loss function are implemented in Numpy. 
-Explanation of files in folder
+This repository provides the tools to train a model to predict the number of fingers held up by a hand in a given image. Two implementations of this model are provided: a PyTorch version and a version, in which the layers, regularizers, normalization, optimizers and loss function are implemented in Numpy.  
+The files are
+- main.py: Calls functions to pre-process new data, load pre-processed data, set up neural networks with PyTorch or the Numpy implementations, trains these models and shows results.
+- dataPrep.py: Contains functions to pre-process data, such as cropping, compressing and labeling. 
+- dataLoad.py: Contains functions to load data, such as normalizing, random shuffling and splitting into training, validation and test sets. 
+- pyTorchTools.py: Contains functions to set up a PyTorch model, to train it, to check its accuracy and to plot results. 
+- numpyLayers.py: Contains functions for the forward and backward propagation of various layers, regularizers, normalizations and a loss function. 
+- numpyModelNN.py: Contains classes to combine the tools from numpyLayers.py into a neural network and compute the loss and gradients. 
+- numpyTools: Contains classes and functions to load the model as specified by numpyModelNN.py, to load data in mini-batches, to train the model with the Adam optimizer, and to show results.  
 
 ## Introduction
 An important factor in the practical applicability of deep neural networks is cost, which can roughly be divided in gathering and storage of data, and computational costs to train and apply models. Decreasing hardware costs reduce computational costs, but another major driver of deep learning's success is the more efficient use of available hardware.  
@@ -22,7 +29,7 @@ In the subsequent sections, the applied methods are discussed, as well as the re
 This section describes details of the dataset used to train and test the model, it discusses the applied network architecture and the method applied to find it, and concludes with remarks on the Numpy module and the machine the model is run on. The relative speed of both implementations is computed as the inverse of the relative time both models require to train. 
 
 ### Dataset
-The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure XXX). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. 
+The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure 1). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. 
 
 Figure 1: Examples of images in dataset  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example1.png "Example image")
@@ -104,6 +111,8 @@ The final architecture is then
 - Drop out - p = 0.75 (probability of being dropped)
 - Affine - hidden units: 6
 - Softmax
+
+Optimization is performed with the Adam optimizer (Kingma & Ba, 2015), with alpha = 0.003, beta_1 = 0.9, beta_2 = 0.999 and epsilon = 1e-8. 
 
 ### Numpy implementation
 The Numpy implementation of the elements in the final architecture were all part of Stanford CS231n course. The Solver class was provided as course material, but the remainder is my own work, inlcuding the vectorized implementations of the various layers. In the files provided in this repository it is specified what is and what is not my own work. 
