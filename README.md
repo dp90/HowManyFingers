@@ -1,5 +1,6 @@
 # How many fingers?
 This repository provides the tools to train a model to predict the number of fingers held up by a hand in a given image. Two implementations of this model are compared: a PyTorch version and a version, in which the layers, regularizers, normalization, optimizers and loss function are implemented in Numpy. 
+Explanation of files in folder
 
 ## Introduction
 An important factor in the practical applicability of deep neural networks is cost, which can roughly be divided in gathering and storage of data, and computational costs to train and apply models. Decreasing hardware costs reduce computational costs, but another major driver of deep learning's success is the more efficient use of available hardware.  
@@ -21,7 +22,14 @@ In the subsequent sections, the applied methods are discussed, as well as the re
 This section describes details of the dataset used to train and test the model, it discusses the applied network architecture and the method applied to find it, and concludes with remarks on the Numpy module and the machine the model is run on. The relative speed of both implementations is computed as the inverse of the relative time both models require to train. 
 
 ### Dataset
-The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure XXX). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
+The dataset consists of 4049 images of both palms and backs of hands with 0-5 fingers extended (see figure XXX). Most (~80%) of these images are of the author's hand, and the remainder is collected from 11 volunteers in equal proportion. 
+
+Figure 1: Examples of images in dataset
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example1.png "Example image")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example2.png "Example image")  
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/Example3.png "Example image")
+
+The distribution of the images amongst the classes can be found in table 1. The images were captured with various backgrounds and in diverse lighting conditions to obtain a degree of generalizability. As most images were taken with the right hand, the images were flipped to represent both left and right hands, and additionally to double the dataset size. 
 
 Table 1: Distribution of images amongst classes
 | # Fingers     | Percentage of total |
@@ -114,7 +122,10 @@ Figure 2: PyTorch model - training and validation accuracies (left) and losses (
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/LossPlotPyTorch.png "Losses")  
 
 The Numpy implementation of the model shows similar results (see figure 3). 
-Image of iterations vs loss. Image of iterations vs accuracies. Table of train, validation and test accuracies. 
+
+Figure 3: Numpy model - train and validation accuracies (left) and losses (right) per iteration
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/AccPlotNumpy.png "Train and validation accuracies")
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/LossPlotNumpy.png "Losses")  
 
 The final accuracies are similar as expected (table 2). Due to the randomness in the weight initialization, the models are not identical. 
 
@@ -122,11 +133,10 @@ Table 2: Accuracies of PyTorch and Numpy model implementations
 |    Module     | Training accuracy | Validation accuracy | Test accuracy |
 | ------------- |:-----------------:| :------------------:|:-------------:|
 |     PyTorch   |       99.01%      |        90.98%       |     90.51%    |
-|      Numpy    |       99.00%      |        90.00%       |     90.00%    |
-
+|      Numpy    |       98.10%      |        90.73%       |     89.77%    |
 
 ### PyTorch Vs Numpy
-While the PyTorch and Numpy implementations of the model perform similarly, as expected, in terms of accuracy, their training times are far from similar. While the PyTorch implementations trained in **1146s**, the Numpy implementation took **xxxxxxxs**, which makes the PyTorch module **xxx** times as fast! 
+While the PyTorch and Numpy implementations of the model perform similarly, as expected, in terms of accuracy, their training times are far from similar. While the PyTorch implementations trained in **1146s**, the Numpy implementation took **28291s** (~8h), which makes the PyTorch module **24.7** times as fast! 
 
 ### Misclassifications
 Before moving on to the conclusions, viewing some of the misclassified images gives more insight in the model's behavior, its abilities, but mostly its sometimes intriguing inabilities. Figure 4 shows three images that are understandably misclassified. The most left image has label 4, but the middle and ring finger are hardly visbile, so that the prediction 2 seems plausible. In the middle picture, it is not difficult to imagine that the classifier counted the thumb too. The color of the fingers in the most right image are very similar to the background, so that the misclassification is not entirely surprising. 
@@ -136,20 +146,22 @@ Figure 4: Understandbly misclassified images
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch2.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch8.png "Misclassified image")
 
-On the other hand, the model misclassified a (larger) number of images that the average human being would have classified correctly without a doubt. Three examples of such images are displayed in Figure 5. Only the little finger in the most right image is not clearly visible, but the predicted value 1 is still off mark, if that finger was not considered by the model. 
+On the other hand, the model misclassified a (larger) number of images that the average human being would have classified correctly without a doubt. Three examples of such images are displayed in Figure 5. Only the little finger in the most right image is not clearly visible, but the predicted value 1 is still off mark, if that finger was not counted. While other network architectures sometimes yielded a high error rate for images with, for example, dark backgrounds, the reported model does not incorporate such biases. 
 
 Figure 5: Strangely misclassified images  
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch3.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch5.png "Misclassified image")
 ![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorPyTorch7.png "Misclassified image")
 
+While the results in table 2 show that the validation and test accuracies are decent, the model's performance is not yet at human level, as observed in figure 5. To improve the model, various strategies can be applied. To select a strategy based on information, instead of on a guess, figure 6 shows the development of the training and validation accuracies for an increasing dataset size. It can be concluded that the model suffers from high variance, for which solutions are discussed in the next section. 
+
+Figure 5: Training and validation accuracies for increasing dataset size
+![alt text](https://github.com/dp90/HowManyFingers/blob/master/Images/ErrorDataSetSize.png "Training and validation accuracies")
+
 ## Conclusion & Discussion
-PyTorch is faster, so I wouldn't recommend or personally use my Numpy implementations. Model's performance could still be improved.  
-Add data. Other option is to regularize with weight decay/dropout, but this also decreases the training error. Given the Bayesian error of 0.0%, this solution could work to improve the model's performance in a practical application, but is not the optimal solution.  
-Another possibility could be to pre-proces the data to remove the background from the images, so that only the hands themselves remain.  
-Ensemble.  
-C++.
-GPU.
+To address the main question of this research project, the PyTorch module outperforms the Numpy implementation by a factor of 24.7. I would therefore not recommend or personally use my Numpy implementations for deep neural networks. While the performance of the Numpy module could still be improved with Cython implementations, JIT and other optimization tools, PyTorch's back-end is written in C++, so that it is unlikely to ever outperform the latter. To improve training time in general, it is advised to make use of GPUs.  
+The prediction model itself was shown to achieve a test error of approximately 10%, which is not bad, but still far from the Bayes error of 0.0%. Methods to improve its performance are multiple. A final analysis showed that the model suffers from high variance, which can be resolved by collecting more data or increasing regularization with weight decay or drop out. Even though this solution could work to improve the model's performance in a practical application, it is not the optimal solution. Regularization tends to increase the training error, while that should approximate the Bayes error in an optimal scenario.  
+Another possibility to improve the model, perhaps even without adding data, could be to pre-proces the data to remove the background from the images, so that only the hands themselves remain. The model then does not need to learn about the different background that the images can have. Finally, the predictive capacity can be improved by using an ensemble of models.  
 
 ## References
 K. He, X. Zhang, S. Ren & J. Sun (2015), Deep Residual Learning for Image Recognition.  
