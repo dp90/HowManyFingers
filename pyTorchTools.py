@@ -23,7 +23,7 @@ def build_pytorch_model():
     channel_7 = 128
     channel_8 = 128
     
-    pDropOut = 0.5
+    pDropOut = 0.75
     model = nn.Sequential(
         nn.Conv2d(in_channel, channel_1, (3,3), padding=1),
         nn.BatchNorm2d(channel_1),
@@ -53,11 +53,11 @@ def build_pytorch_model():
         nn.BatchNorm2d(channel_8),
         nn.ReLU(),
         Flatten(),
-        nn.Linear(int(channel_8*imH*imW/(4*4*4)), 32),
-        nn.BatchNorm1d(32),
+        nn.Linear(int(channel_8*imH*imW/(4*4*4)), 48),
+        nn.BatchNorm1d(48),
         nn.ReLU(),
         nn.Dropout(p=pDropOut),
-        nn.Linear(32,6)
+        nn.Linear(48,6)
     )
     
     model.apply(init_weight)
